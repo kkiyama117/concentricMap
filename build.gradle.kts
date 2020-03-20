@@ -7,6 +7,7 @@ plugins {
     kotlin("kapt") version "1.3.70"
     // application plugin
     application
+    idea
 }
 
 // versions
@@ -94,7 +95,6 @@ dependencies {
         kotlin("stdlib-jdk8"),
         kotlin("reflect"),
         // kotlin options
-        "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$serializationVersion",
         // ktor
         "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion",
         "io.ktor:ktor-server-cio:$ktorVersion",
@@ -111,7 +111,8 @@ dependencies {
         "io.ktor:ktor-client-core-jvm:$ktorVersion",
         "io.ktor:ktor-client-auth-jvm:$ktorVersion",
         "io.ktor:ktor-client-json-jvm:$ktorVersion",
-        "io.ktor:ktor-client-gson:$ktorVersion",
+        "io.ktor:ktor-client-serialization-jvm:$ktorVersion",
+        // "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$serializationVersion",
         "io.ktor:ktor-client-cio:$ktorVersion",
         "io.ktor:ktor-client-websockets:$ktorVersion",
         "io.ktor:ktor-client-logging-jvm:$ktorVersion"

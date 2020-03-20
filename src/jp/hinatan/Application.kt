@@ -4,14 +4,6 @@ import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.auth.Authentication
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
-import io.ktor.client.features.BrowserUserAgent
-import io.ktor.client.features.auth.Auth
-import io.ktor.client.features.json.GsonSerializer
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.client.features.logging.LogLevel
-import io.ktor.client.features.logging.Logging
 import io.ktor.features.AutoHeadResponse
 import io.ktor.features.CORS
 import io.ktor.features.CallLogging
@@ -31,7 +23,6 @@ import io.ktor.http.cio.websocket.pingPeriod
 import io.ktor.http.cio.websocket.readText
 import io.ktor.http.cio.websocket.timeout
 import io.ktor.locations.KtorExperimentalLocationsAPI
-import io.ktor.locations.Location
 import io.ktor.locations.Locations
 import io.ktor.locations.get
 import io.ktor.request.path
@@ -42,8 +33,10 @@ import io.ktor.routing.routing
 import io.ktor.util.KtorExperimentalAPI
 import io.ktor.websocket.webSocket
 import java.time.Duration
-import kotlinx.coroutines.runBlocking
-import kotlinx.css.body
+import jp.hinatan.exceptions.AuthenticationException
+import jp.hinatan.exceptions.AuthorizationException
+import jp.hinatan.locations.MyLocation
+import jp.hinatan.locations.Type
 import kotlinx.html.body
 import kotlinx.html.h1
 import kotlinx.html.li
@@ -62,7 +55,7 @@ fun Application.module(testing: Boolean = false) {
     }
 
     /**
-     * Compress css and js and resources
+     * Compress resources
      */
     install(Compression) {
         gzip {
@@ -76,11 +69,13 @@ fun Application.module(testing: Boolean = false) {
 
     install(AutoHeadResponse)
 
+    // Logging
     install(CallLogging) {
         level = Level.INFO
         filter { call -> call.request.path().startsWith("/") }
     }
 
+    // CORS header setting
     install(CORS) {
         method(HttpMethod.Options)
         method(HttpMethod.Put)
@@ -108,6 +103,7 @@ fun Application.module(testing: Boolean = false) {
 
     /**
      * Use WebSocket
+     * https://ktor.io/servers/features/websockets.html
      */
     install(io.ktor.websocket.WebSockets) {
         pingPeriod = Duration.ofSeconds(15)
@@ -121,31 +117,8 @@ fun Application.module(testing: Boolean = false) {
     }
 
     /**
-     * Config for Client
+     * Route setting for server
      */
-    val client = HttpClient(CIO) {
-        install(Auth) {
-        }
-        install(JsonFeature) {
-            serializer = GsonSerializer()
-        }
-        install(Logging) {
-            level = LogLevel.HEADERS
-        }
-        BrowserUserAgent() // install default browser-like user-agent
-        // install(UserAgent) { agent = "some user agent" }
-    }
-    runBlocking {
-        // Sample for making a HTTP Client request
-        /*
-        val message = client.post<JsonSampleClass> {
-            url("http://127.0.0.1:8080/path/to/endpoint")
-            contentType(ContentType.Application.Json)
-            body = JsonSampleClass(hello = "world")
-        }
-        */
-    }
-
     routing {
         get("/") {
             call.respondText("HELLO WORLD!", contentType = ContentType.Text.Plain)
@@ -175,6 +148,7 @@ fun Application.module(testing: Boolean = false) {
             call.respondText("Inside $it")
         }
 
+        // status page
         install(StatusPages) {
             exception<AuthenticationException> {
                 call.respond(HttpStatusCode.Unauthorized)
@@ -195,22 +169,3 @@ fun Application.module(testing: Boolean = false) {
         }
     }
 }
-
-@KtorExperimentalLocationsAPI
-@Location("/location/{name}")
-class MyLocation(val name: String, val arg1: Int = 42, val arg2: String = "default")
-
-@KtorExperimentalLocationsAPI
-@Location("/type/{name}")
-data class Type(val name: String) {
-    @Location("/edit")
-    data class Edit(val type: Type)
-
-    @Location("/list/{page}")
-    data class List(val type: Type, val page: Int)
-}
-
-class AuthenticationException : RuntimeException()
-class AuthorizationException : RuntimeException()
-
-data class JsonSampleClass(val hello: String)
