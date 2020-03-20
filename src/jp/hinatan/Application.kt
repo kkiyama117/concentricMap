@@ -1,7 +1,6 @@
 package jp.hinatan
 
 import io.ktor.application.Application
-import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.auth.Authentication
@@ -40,32 +39,31 @@ import io.ktor.response.respond
 import io.ktor.response.respondText
 import io.ktor.routing.get
 import io.ktor.routing.routing
+import io.ktor.util.KtorExperimentalAPI
 import io.ktor.websocket.webSocket
 import java.time.Duration
 import kotlinx.coroutines.runBlocking
-import kotlinx.css.CSSBuilder
-import kotlinx.css.Color
 import kotlinx.css.body
-import kotlinx.css.em
-import kotlinx.css.p
-import kotlinx.html.CommonAttributeGroupFacade
-import kotlinx.html.FlowOrMetaDataContent
 import kotlinx.html.body
 import kotlinx.html.h1
 import kotlinx.html.li
-import kotlinx.html.style
 import kotlinx.html.ul
 import org.slf4j.event.Level
 
 fun main(args: Array<String>): Unit = io.ktor.server.cio.EngineMain.main(args)
 
+@KtorExperimentalAPI
 @KtorExperimentalLocationsAPI
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
     install(Locations) {
+        // set URL
     }
 
+    /**
+     * Compress css and js and resources
+     */
     install(Compression) {
         gzip {
             priority = 1.0
@@ -91,13 +89,13 @@ fun Application.module(testing: Boolean = false) {
         header(HttpHeaders.Authorization)
         header("MyCustomHeader")
         allowCredentials = true
-        anyHost() // @TODO: Don't do this in production if possible. Try to limit it.
+        anyHost()
+        // @TODO: Don't do this in production if possible. Try to limit it.
     }
 
     install(DefaultHeaders) {
         header("X-Engine", "Ktor") // will send this header with each response
     }
-
     // https://ktor.io/servers/features/https-redirect.html#testing
 //    if (!testing) {
 //        install(HttpsRedirect) {
@@ -108,6 +106,9 @@ fun Application.module(testing: Boolean = false) {
 //        }
 //    }
 
+    /**
+     * Use WebSocket
+     */
     install(io.ktor.websocket.WebSockets) {
         pingPeriod = Duration.ofSeconds(15)
         timeout = Duration.ofSeconds(15)
@@ -115,9 +116,13 @@ fun Application.module(testing: Boolean = false) {
         masking = false
     }
 
+    // Authentication
     install(Authentication) {
     }
 
+    /**
+     * Config for Client
+     */
     val client = HttpClient(CIO) {
         install(Auth) {
         }
@@ -159,20 +164,6 @@ fun Application.module(testing: Boolean = false) {
             }
         }
 
-        get("/styles.css") {
-            call.respondCss {
-                body {
-                    backgroundColor = Color.red
-                }
-                p {
-                    fontSize = 2.em
-                }
-                rule("p.myclass") {
-                    color = Color.blue
-                }
-            }
-        }
-
         get<MyLocation> {
             call.respondText("Location: name=${it.name}, arg1=${it.arg1}, arg2=${it.arg2}")
         }
@@ -185,10 +176,10 @@ fun Application.module(testing: Boolean = false) {
         }
 
         install(StatusPages) {
-            exception<AuthenticationException> { cause ->
+            exception<AuthenticationException> {
                 call.respond(HttpStatusCode.Unauthorized)
             }
-            exception<AuthorizationException> { cause ->
+            exception<AuthorizationException> {
                 call.respond(HttpStatusCode.Forbidden)
             }
         }
@@ -223,17 +214,3 @@ class AuthenticationException : RuntimeException()
 class AuthorizationException : RuntimeException()
 
 data class JsonSampleClass(val hello: String)
-
-fun FlowOrMetaDataContent.styleCss(builder: CSSBuilder.() -> Unit) {
-    style(type = ContentType.Text.CSS.toString()) {
-        +CSSBuilder().apply(builder).toString()
-    }
-}
-
-fun CommonAttributeGroupFacade.style(builder: CSSBuilder.() -> Unit) {
-    this.style = CSSBuilder().apply(builder).toString().trim()
-}
-
-suspend inline fun ApplicationCall.respondCss(builder: CSSBuilder.() -> Unit) {
-    this.respondText(CSSBuilder().apply(builder).toString(), ContentType.Text.CSS)
-}

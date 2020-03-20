@@ -5,11 +5,13 @@ import io.ktor.client.features.websocket.ws
 import io.ktor.http.HttpMethod
 import io.ktor.http.cio.websocket.Frame
 import io.ktor.http.cio.websocket.readText
+import io.ktor.util.KtorExperimentalAPI
 import kotlinx.coroutines.channels.filterNotNull
 import kotlinx.coroutines.channels.map
 import kotlinx.coroutines.runBlocking
 
 object WsClientApp {
+    @KtorExperimentalAPI
     @JvmStatic
     fun main(args: Array<String>) {
         runBlocking {

@@ -9,13 +9,17 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.fullPath
 import io.ktor.http.headersOf
+import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.server.testing.handleRequest
 import io.ktor.server.testing.withTestApplication
+import io.ktor.util.KtorExperimentalAPI
 import io.ktor.utils.io.ByteReadChannel
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+@KtorExperimentalAPI
+@KtorExperimentalLocationsAPI
 class ApplicationTest {
     @Test
     fun testRoot() {
@@ -46,7 +50,7 @@ class ApplicationTest {
             }
             assertEquals(byteArrayOf(1, 2, 3).toList(), client.get<ByteArray>("/").toList())
 //            assertEquals("MyValue", client.call("/").response.headers["X-MyHeader"])
-            assertEquals("Not Found other/path", client.get<String>("/other/path"))
+            assertEquals("Not Found other/path", client.get("/other/path"))
         }
     }
 }
