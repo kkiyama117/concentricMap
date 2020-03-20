@@ -10,6 +10,12 @@ plugins {
 }
 
 // versions
+val buildVersions = mapOf(
+    "major" to 1,
+    "minor" to 0,
+    "patch" to 1,
+    "suffix" to "SNAPSHOT"
+)
 val kotlinVersion: String by project
 // Versions of plugins
 val ktorVersion: String by project
@@ -34,7 +40,7 @@ sourceSets {
 }
 
 group = "jp.hinatan"
-version = "0.0.1"
+version = "${buildVersions["major"]}.${buildVersions["minor"]}.${buildVersions["patch"]}-${buildVersions["suffix"]}"
 
 application {
     mainClassName = "io.ktor.server.cio.EngineMain"
