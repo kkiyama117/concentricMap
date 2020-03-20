@@ -27,6 +27,21 @@ kapt {
     }
 }
 
+application {
+//    mainClassName = "io.ktor.server.netty.EngineMain"
+}
+
+// setting for kapt (annotation)
+kapt {
+    correctErrorTypes = true
+    javacOptions {
+        option("SomeJavacOption", "OptionValue")
+    }
+    arguments {
+        arg("SomeKaptArgument", "ArgumentValue")
+    }
+}
+
 repositories {
     jcenter()
 }
@@ -34,6 +49,8 @@ repositories {
 val implementation by configurations
 val testImplementation by configurations
 val compileOnly by configurations
+// ktlint
+val ktlint: Configuration by configurations.creating
 
 // Versions of plugins
 val ktorVersion by extra { "1.3.2" }
@@ -56,6 +73,8 @@ dependencies {
     kapt("com.google.auto.value:auto-value:$autoValueVersion")
 //    testImplementation("y.z:x:1.0")
 //    compileOnly("z.x:y:1.0")
+    // ktlint
+    ktlint("com.pinterest:ktlint:$ktlintVersion")
 }
 
 // tasks
@@ -67,12 +86,6 @@ compileTestKotlin.kotlinOptions.jvmTarget = "1.8"
 /*
  * KtLint setting (below)
  */
-val ktlint: Configuration by configurations.creating
-
-dependencies {
-    ktlint("com.pinterest:ktlint:$ktlintVersion")
-}
-
 tasks.register<JavaExec>("ktlint") {
     group = "verification"
     description = "Check Kotlin code style."
@@ -80,6 +93,7 @@ tasks.register<JavaExec>("ktlint") {
     main = "com.pinterest.ktlint.Main"
     args = listOf("src/**/*.kt")
 }
+// Force format
 tasks.register<JavaExec>("ktlintFormat") {
     group = "verification"
     description = "Fix Kotlin code style deviations."
