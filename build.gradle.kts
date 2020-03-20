@@ -9,11 +9,35 @@ plugins {
     application
 }
 
+// versions
+val kotlinVersion: String by project
+// Versions of plugins
+val ktorVersion: String by project
+val serializationVersion by extra { "0.20.0" }
+val autoValueVersion by extra { "1.7" }
+val ktlintVersion by extra { "0.35.0" }
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath(kotlin("gradle-plugin"))
+    }
+}
+
+sourceSets {
+    getByName("main").java.srcDirs("src")
+    getByName("test").java.srcDirs("test")
+    getByName("main").resources.srcDirs("resources")
+    getByName("test").resources.srcDirs("testresources")
+}
+
 group = "jp.hinatan"
-version = "1.0.1-SNAPSHOT"
+version = "0.0.1"
 
 application {
-//    mainClassName = "io.ktor.server.netty.EngineMain"
+    mainClassName = "io.ktor.server.cio.EngineMain"
 }
 
 // setting for kapt (annotation)
@@ -43,20 +67,19 @@ kapt {
 }
 
 repositories {
+    mavenCentral()
     jcenter()
+    listOf(
+        "https://kotlin.bintray.com/ktor",
+        "https://kotlin.bintray.com/kotlin-js-wrappers",
+        "https://kotlin.bintray.com/kotlinx"
+    ).forEach { maven(url = it) }
 }
 
 val implementation by configurations
 val testImplementation by configurations
 val compileOnly by configurations
-// ktlint
 val ktlint: Configuration by configurations.creating
-
-// Versions of plugins
-val ktorVersion by extra { "1.3.2" }
-val serializationVersion by extra { "0.20.0" }
-val autoValueVersion by extra { "1.7" }
-val ktlintVersion by extra { "0.35.0" }
 
 dependencies {
     // implementation
@@ -67,12 +90,36 @@ dependencies {
         // kotlin options
         "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$serializationVersion",
         // ktor
-        "io.ktor:ktor-server-netty:$ktorVersion"
+        "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion",
+        "io.ktor:ktor-server-cio:$ktorVersion",
+        "ch.qos.logback:logback-classic:1.2.1",
+        "io.ktor:ktor-server-core:$ktorVersion",
+        "io.ktor:ktor-html-builder:$ktorVersion",
+        "org.jetbrains:kotlin-css-jvm:1.0.0-pre.31-kotlin-1.2.41",
+        "io.ktor:ktor-locations:$ktorVersion",
+        "io.ktor:ktor-server-host-common:$ktorVersion",
+        "io.ktor:ktor-websockets:$ktorVersion",
+        "io.ktor:ktor-auth:$ktorVersion",
+        "io.ktor:ktor-auth-jwt:$ktorVersion",
+        "io.ktor:ktor-client-core:$ktorVersion",
+        "io.ktor:ktor-client-core-jvm:$ktorVersion",
+        "io.ktor:ktor-client-auth-jvm:$ktorVersion",
+        "io.ktor:ktor-client-json-jvm:$ktorVersion",
+        "io.ktor:ktor-client-gson:$ktorVersion",
+        "io.ktor:ktor-client-cio:$ktorVersion",
+        "io.ktor:ktor-client-websockets:$ktorVersion",
+        "io.ktor:ktor-client-logging-jvm:$ktorVersion"
     ).forEach { implementation(it) }
+
     // kapt
     kapt("com.google.auto.value:auto-value:$autoValueVersion")
-//    testImplementation("y.z:x:1.0")
-//    compileOnly("z.x:y:1.0")
+
+    // test dependencies
+    listOf(
+        "io.ktor:ktor-server-tests:$ktorVersion",
+        "io.ktor:ktor-client-mock:$ktorVersion",
+        "io.ktor:ktor-client-mock-jvm:$ktorVersion"
+    ).forEach { testImplementation(it) }
     // ktlint
     ktlint("com.pinterest:ktlint:$ktlintVersion")
 }
