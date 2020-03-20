@@ -1,36 +1,65 @@
 package jp.hinatan
 
-import io.ktor.application.*
-import io.ktor.response.*
-import io.ktor.request.*
-import io.ktor.routing.*
-import io.ktor.http.*
-import io.ktor.html.*
-import kotlinx.html.*
-import kotlinx.css.*
-import io.ktor.locations.*
-import io.ktor.features.*
-import org.slf4j.event.*
-import io.ktor.websocket.*
-import io.ktor.http.cio.websocket.*
-import java.time.*
-import io.ktor.auth.*
-import io.ktor.client.*
-import io.ktor.client.features.auth.*
-import io.ktor.client.features.json.*
-import io.ktor.client.request.*
-import kotlinx.coroutines.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.features.websocket.*
-import io.ktor.client.features.websocket.WebSockets
-import io.ktor.http.cio.websocket.Frame
-import kotlinx.coroutines.channels.*
-import io.ktor.client.features.logging.*
-import io.ktor.client.features.UserAgent
+import io.ktor.application.Application
+import io.ktor.application.ApplicationCall
+import io.ktor.application.call
+import io.ktor.application.install
+import io.ktor.auth.Authentication
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.cio.CIO
 import io.ktor.client.features.BrowserUserAgent
+import io.ktor.client.features.auth.Auth
+import io.ktor.client.features.json.GsonSerializer
+import io.ktor.client.features.json.JsonFeature
+import io.ktor.client.features.logging.LogLevel
+import io.ktor.client.features.logging.Logging
+import io.ktor.features.AutoHeadResponse
+import io.ktor.features.CORS
+import io.ktor.features.CallLogging
+import io.ktor.features.Compression
+import io.ktor.features.DefaultHeaders
+import io.ktor.features.StatusPages
+import io.ktor.features.deflate
+import io.ktor.features.gzip
+import io.ktor.features.minimumSize
+import io.ktor.html.respondHtml
+import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.cio.websocket.Frame
+import io.ktor.http.cio.websocket.pingPeriod
+import io.ktor.http.cio.websocket.readText
+import io.ktor.http.cio.websocket.timeout
+import io.ktor.locations.KtorExperimentalLocationsAPI
+import io.ktor.locations.Location
+import io.ktor.locations.Locations
+import io.ktor.locations.get
+import io.ktor.request.path
+import io.ktor.response.respond
+import io.ktor.response.respondText
+import io.ktor.routing.get
+import io.ktor.routing.routing
+import io.ktor.websocket.webSocket
+import java.time.Duration
+import kotlinx.coroutines.runBlocking
+import kotlinx.css.CSSBuilder
+import kotlinx.css.Color
+import kotlinx.css.body
+import kotlinx.css.em
+import kotlinx.css.p
+import kotlinx.html.CommonAttributeGroupFacade
+import kotlinx.html.FlowOrMetaDataContent
+import kotlinx.html.body
+import kotlinx.html.h1
+import kotlinx.html.li
+import kotlinx.html.style
+import kotlinx.html.ul
+import org.slf4j.event.Level
 
 fun main(args: Array<String>): Unit = io.ktor.server.cio.EngineMain.main(args)
 
+@KtorExperimentalLocationsAPI
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
@@ -70,14 +99,14 @@ fun Application.module(testing: Boolean = false) {
     }
 
     // https://ktor.io/servers/features/https-redirect.html#testing
-    if (!testing) {
-        install(HttpsRedirect) {
-            // The port to redirect to. By default 443, the default HTTPS port.
-            sslPort = 443
-            // 301 Moved Permanently, or 302 Found redirect.
-            permanentRedirect = true
-        }
-    }
+//    if (!testing) {
+//        install(HttpsRedirect) {
+    // The port to redirect to. By default 443, the default HTTPS port.
+//            sslPort = 443
+    // 301 Moved Permanently, or 302 Found redirect.
+//            permanentRedirect = true
+//        }
+//    }
 
     install(io.ktor.websocket.WebSockets) {
         pingPeriod = Duration.ofSeconds(15)
@@ -162,7 +191,6 @@ fun Application.module(testing: Boolean = false) {
             exception<AuthorizationException> { cause ->
                 call.respond(HttpStatusCode.Forbidden)
             }
-
         }
 
         webSocket("/myws/echo") {
@@ -177,10 +205,13 @@ fun Application.module(testing: Boolean = false) {
     }
 }
 
+@KtorExperimentalLocationsAPI
 @Location("/location/{name}")
 class MyLocation(val name: String, val arg1: Int = 42, val arg2: String = "default")
 
-@Location("/type/{name}") data class Type(val name: String) {
+@KtorExperimentalLocationsAPI
+@Location("/type/{name}")
+data class Type(val name: String) {
     @Location("/edit")
     data class Edit(val type: Type)
 

@@ -1,31 +1,13 @@
-import io.ktor.application.*
-import io.ktor.response.*
-import io.ktor.request.*
-import io.ktor.routing.*
-import io.ktor.http.*
-import io.ktor.html.*
-import kotlinx.html.*
-import kotlinx.css.*
-import io.ktor.locations.*
-import io.ktor.features.*
-import org.slf4j.event.*
-import io.ktor.websocket.*
-import io.ktor.http.cio.websocket.*
-import java.time.*
-import io.ktor.auth.*
-import io.ktor.client.*
-import io.ktor.client.features.auth.*
-import io.ktor.client.features.json.*
-import io.ktor.client.request.*
-import kotlinx.coroutines.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.features.websocket.*
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.cio.CIO
 import io.ktor.client.features.websocket.WebSockets
+import io.ktor.client.features.websocket.ws
+import io.ktor.http.HttpMethod
 import io.ktor.http.cio.websocket.Frame
-import kotlinx.coroutines.channels.*
-import io.ktor.client.features.logging.*
-import io.ktor.client.features.UserAgent
-import io.ktor.client.features.BrowserUserAgent
+import io.ktor.http.cio.websocket.readText
+import kotlinx.coroutines.channels.filterNotNull
+import kotlinx.coroutines.channels.map
+import kotlinx.coroutines.runBlocking
 
 object WsClientApp {
     @JvmStatic
