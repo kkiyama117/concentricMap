@@ -10,10 +10,12 @@ import io.ktor.http.cio.websocket.Frame
 import io.ktor.http.cio.websocket.readText
 import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.locations.get
+import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.response.respondText
 import io.ktor.routing.Routing
 import io.ktor.routing.get
+import io.ktor.routing.post
 import io.ktor.websocket.webSocket
 import jp.hinatan.entity.Snippet
 import jp.hinatan.exceptions.AuthenticationException
@@ -34,13 +36,20 @@ fun Routing.routes() {
     }
 
     // json test
-    val snippets = Collections.synchronizedList(mutableListOf(
-        Snippet("hello"),
-        Snippet("world")
-    ))
+    val snippets = Collections.synchronizedList(
+        mutableListOf(
+            Snippet("hello"),
+            Snippet("world")
+        )
+    )
     get("/snippets") {
 //        call.respond(mapOf("OK" to true))
         call.respond(mapOf("snippets" to synchronized(snippets) { snippets.toList() }))
+    }
+    post("/snippets") {
+        val post = call.receive<Snippet>()
+        snippets += Snippet(post.text)
+        call.respond(mapOf("OK" to true))
     }
 
     get("/html-dsl") {
