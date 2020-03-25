@@ -2,6 +2,9 @@ package jp.hinatan.routes
 
 import io.ktor.application.call
 import io.ktor.application.install
+import io.ktor.auth.UserIdPrincipal
+import io.ktor.auth.authenticate
+import io.ktor.auth.principal
 import io.ktor.features.StatusPages
 import io.ktor.html.respondHtml
 import io.ktor.http.ContentType
@@ -18,14 +21,19 @@ import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.route
 import io.ktor.websocket.webSocket
+import java.util.*
+import jp.hinatan.auth.simpleJwt
+import jp.hinatan.entity.LoginRegister
 import jp.hinatan.entity.Snippet
+import jp.hinatan.entity.User
+import jp.hinatan.entity.snippets
+import jp.hinatan.entity.users
 import jp.hinatan.exceptions.AuthenticationException
 import jp.hinatan.exceptions.AuthorizationException
 import kotlinx.html.body
 import kotlinx.html.h1
 import kotlinx.html.li
 import kotlinx.html.ul
-import java.util.*
 
 /**
  * Route setting for server
@@ -37,22 +45,27 @@ fun Routing.routes() {
     }
 
     // json test
-    val snippets = Collections.synchronizedList(
-        mutableListOf(
-            Snippet("hello"),
-            Snippet("world")
-        )
-    )
     route("/snippets") {
         get {
 //        call.respond(mapOf("OK" to true))
             call.respond(mapOf("snippets" to synchronized(snippets) { snippets.toList() }))
         }
-        post {
-            val post = call.receive<Snippet>()
-            snippets += Snippet(post.text)
-            call.respond(mapOf("OK" to true))
+        authenticate {
+            post {
+                val post = call.receive<Snippet>()
+                // use authorization feature
+                val principal = call.principal<UserIdPrincipal>() ?: error("No principal")
+                snippets += Snippet(principal.name, post.text)
+                call.respond(mapOf("OK" to true))
+            }
         }
+    }
+    // auth test
+    post("/login-register") {
+        val post = call.receive<LoginRegister>()
+        val user = users.getOrPut(post.user) { User(post.user, post.password) }
+        if (user.password != post.password) error("Invalid credentials")
+        call.respond(mapOf("token" to simpleJwt.sign(user.name)))
     }
 
     get("/html-dsl") {
@@ -102,5 +115,4 @@ fun Routing.routes() {
 }
 
 fun webSocket() {
-
 }

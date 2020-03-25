@@ -3,6 +3,8 @@ package jp.hinatan
 import io.ktor.application.Application
 import io.ktor.application.install
 import io.ktor.auth.Authentication
+import io.ktor.auth.UserIdPrincipal
+import io.ktor.auth.jwt.jwt
 import io.ktor.features.AutoHeadResponse
 import io.ktor.features.CORS
 import io.ktor.features.CallLogging
@@ -22,11 +24,11 @@ import io.ktor.request.path
 import io.ktor.routing.routing
 import io.ktor.serialization.DefaultJsonConfiguration
 import io.ktor.serialization.json
-import io.ktor.serialization.serialization
 import io.ktor.util.KtorExperimentalAPI
+import java.time.Duration
+import jp.hinatan.auth.simpleJwt
 import jp.hinatan.routes.routes
 import org.slf4j.event.Level
-import java.time.Duration
 
 fun main(args: Array<String>): Unit = io.ktor.server.cio.EngineMain.main(args)
 
@@ -99,6 +101,12 @@ fun Application.module(testing: Boolean = false) {
 
     // Authentication
     install(Authentication) {
+        jwt {
+            verifier(simpleJwt.verifier)
+            validate {
+                UserIdPrincipal(it.payload.getClaim("name").asString())
+            }
+        }
     }
 
     // JSON
