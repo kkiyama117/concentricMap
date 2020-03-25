@@ -16,6 +16,7 @@ import io.ktor.response.respondText
 import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.ktor.routing.post
+import io.ktor.routing.route
 import io.ktor.websocket.webSocket
 import jp.hinatan.entity.Snippet
 import jp.hinatan.exceptions.AuthenticationException
@@ -42,14 +43,16 @@ fun Routing.routes() {
             Snippet("world")
         )
     )
-    get("/snippets") {
+    route("/snippets") {
+        get {
 //        call.respond(mapOf("OK" to true))
-        call.respond(mapOf("snippets" to synchronized(snippets) { snippets.toList() }))
-    }
-    post("/snippets") {
-        val post = call.receive<Snippet>()
-        snippets += Snippet(post.text)
-        call.respond(mapOf("OK" to true))
+            call.respond(mapOf("snippets" to synchronized(snippets) { snippets.toList() }))
+        }
+        post {
+            val post = call.receive<Snippet>()
+            snippets += Snippet(post.text)
+            call.respond(mapOf("OK" to true))
+        }
     }
 
     get("/html-dsl") {
