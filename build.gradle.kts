@@ -5,6 +5,7 @@ plugins {
     kotlin("jvm") version "1.3.70"
     // annotation
     kotlin("kapt") version "1.3.70"
+    kotlin("plugin.serialization") version "1.3.70"
     // application plugin
     application
     idea
@@ -95,18 +96,26 @@ dependencies {
         kotlin("stdlib-jdk8"),
         kotlin("reflect"),
         // kotlin options
-        // ktor
-        "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion",
-        "io.ktor:ktor-server-cio:$ktorVersion",
+        // logging
         "ch.qos.logback:logback-classic:1.2.1",
+        // ktor
+        // server
         "io.ktor:ktor-server-core:$ktorVersion",
-        "io.ktor:ktor-html-builder:$ktorVersion",
-        "org.jetbrains:kotlin-css-jvm:1.0.0-pre.31-kotlin-1.2.41",
-        "io.ktor:ktor-locations:$ktorVersion",
         "io.ktor:ktor-server-host-common:$ktorVersion",
+        "io.ktor:ktor-server-cio:$ktorVersion",
+        // html
+        "io.ktor:ktor-html-builder:$ktorVersion",
+        // json
+        "io.ktor:ktor-serialization:$ktorVersion",
+        // locations
+        "io.ktor:ktor-locations:$ktorVersion",
+        // websockets
         "io.ktor:ktor-websockets:$ktorVersion",
+        // Auth
         "io.ktor:ktor-auth:$ktorVersion",
         "io.ktor:ktor-auth-jwt:$ktorVersion",
+
+        // client
         "io.ktor:ktor-client-core:$ktorVersion",
         "io.ktor:ktor-client-core-jvm:$ktorVersion",
         "io.ktor:ktor-client-auth-jvm:$ktorVersion",

@@ -1,4 +1,4 @@
-package jp.hinatan.locations
+package jp.hinatan.routes
 
 import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.locations.Location

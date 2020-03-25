@@ -1,3 +1,6 @@
 package jp.hinatan.entity
 
-data class JsonSampleClass(val hello: String)
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class Snippet(val text: String)
