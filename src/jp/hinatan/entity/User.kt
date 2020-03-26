@@ -13,4 +13,4 @@ val users: MutableMap<String, User> = Collections.synchronizedMap(
 )
 
 @Serializable
-class LoginRegister(val user: String, val password: String)
+class LoginRegister(val name: String, val password: String)

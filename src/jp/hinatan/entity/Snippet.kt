@@ -1,14 +1,21 @@
 package jp.hinatan.entity
 
+import com.typesafe.config.Optional
+import kotlinx.serialization.SerialName
 import java.util.*
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Snippet(val user: String, val text: String)
+data class Snippet(
+    @SerialName("user")
+    @Optional
+    val username: String? = null,
+    val text: String
+)
 
-val snippets = Collections.synchronizedList(
+val snippets: MutableList<Snippet> = Collections.synchronizedList(
     mutableListOf(
-        Snippet(user = "test", text = "hello"),
-        Snippet(user = "test", text = "world")
+        Snippet(username = "test", text = "hello"),
+        Snippet(username = "test", text = "world")
     )
 )

@@ -6,7 +6,6 @@ import io.ktor.auth.UserIdPrincipal
 import io.ktor.auth.authenticate
 import io.ktor.auth.principal
 import io.ktor.features.StatusPages
-import io.ktor.html.respondHtml
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.cio.websocket.Frame
@@ -21,7 +20,6 @@ import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.route
 import io.ktor.websocket.webSocket
-import java.util.*
 import jp.hinatan.auth.simpleJwt
 import jp.hinatan.entity.LoginRegister
 import jp.hinatan.entity.Snippet
@@ -30,10 +28,6 @@ import jp.hinatan.entity.snippets
 import jp.hinatan.entity.users
 import jp.hinatan.exceptions.AuthenticationException
 import jp.hinatan.exceptions.AuthorizationException
-import kotlinx.html.body
-import kotlinx.html.h1
-import kotlinx.html.li
-import kotlinx.html.ul
 
 /**
  * Route setting for server
@@ -63,22 +57,9 @@ fun Routing.routes() {
     // auth test
     post("/login-register") {
         val post = call.receive<LoginRegister>()
-        val user = users.getOrPut(post.user) { User(post.user, post.password) }
+        val user = users.getOrPut(post.name) { User(post.name, post.password) }
         if (user.password != post.password) error("Invalid credentials")
         call.respond(mapOf("token" to simpleJwt.sign(user.name)))
-    }
-
-    get("/html-dsl") {
-        call.respondHtml {
-            body {
-                h1 { +"HTML" }
-                ul {
-                    for (n in 1..10) {
-                        li { +"$n" }
-                    }
-                }
-            }
-        }
     }
 
     get<MyLocation> {
