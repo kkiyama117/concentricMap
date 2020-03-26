@@ -33,6 +33,7 @@ import java.time.Duration
 import jp.hinatan.auth.simpleJwt
 import jp.hinatan.exceptions.AuthenticationException
 import jp.hinatan.exceptions.AuthorizationException
+import jp.hinatan.exceptions.InvalidCredentialsException
 import jp.hinatan.routes.routes
 import org.slf4j.event.Level
 
@@ -127,8 +128,9 @@ fun Application.module(testing: Boolean = false) {
     // status page
     // Also see routing
     install(StatusPages) {
-        exception<AuthenticationException> {
-            call.respond(HttpStatusCode.Unauthorized)
+        // About Auth
+        exception<AuthenticationException> { exception ->
+            call.respond(HttpStatusCode.Unauthorized, mapOf("status" to "NG", "error" to (exception.message ?: "")))
         }
         exception<AuthorizationException> {
             call.respond(HttpStatusCode.Forbidden)
