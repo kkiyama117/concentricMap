@@ -1,7 +1,6 @@
 package jp.hinatan
 
 import io.ktor.client.HttpClient
-import io.ktor.client.call.call
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
 import io.ktor.client.request.get
@@ -24,9 +23,13 @@ class ApplicationTest {
     @Test
     fun testRoot() {
         withTestApplication({ module(testing = true) }) {
-            handleRequest(HttpMethod.Get, "/").apply {
+            handleRequest(HttpMethod.Get, "/health_check").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals("HELLO WORLD!", response.content)
+                assertEquals(
+                    """{
+                        |    "Status": "OK"
+|}""".trimMargin(), response.content
+                )
             }
         }
     }
@@ -36,7 +39,7 @@ class ApplicationTest {
         runBlocking {
             val client = HttpClient(MockEngine) {
                 engine {
-                    addHandler { request -> 
+                    addHandler { request ->
                         when (request.url.fullPath) {
                             "/" -> respond(
                                 ByteReadChannel(byteArrayOf(1, 2, 3)),

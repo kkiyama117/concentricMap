@@ -34,10 +34,6 @@ import jp.hinatan.exceptions.AuthorizationException
  */
 @KtorExperimentalLocationsAPI
 fun Routing.routes() {
-    get("/") {
-        call.respondText("HELLO WORLD2!", contentType = ContentType.Text.Plain)
-    }
-
     // json test
     route("/snippets") {
         get {
@@ -55,6 +51,7 @@ fun Routing.routes() {
         }
     }
     // auth test
+    // TODO: Use Firebase
     post("/login-register") {
         val post = call.receive<LoginRegister>()
         val user = users.getOrPut(post.name) { User(post.name, post.password) }
@@ -73,15 +70,9 @@ fun Routing.routes() {
         call.respondText("Inside $it")
     }
 
-    // status page
-    // Also see routing
-    install(StatusPages) {
-        exception<AuthenticationException> {
-            call.respond(HttpStatusCode.Unauthorized)
-        }
-        exception<AuthorizationException> {
-            call.respond(HttpStatusCode.Forbidden)
-        }
+    get("/health_check") {
+        // Check databases/other services.
+        call.respond(mapOf("Status" to "OK"))
     }
 
     webSocket("/myws/echo") {

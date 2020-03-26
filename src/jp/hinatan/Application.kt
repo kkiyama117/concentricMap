@@ -1,6 +1,7 @@
 package jp.hinatan
 
 import io.ktor.application.Application
+import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.auth.Authentication
 import io.ktor.auth.UserIdPrincipal
@@ -11,22 +12,27 @@ import io.ktor.features.CallLogging
 import io.ktor.features.Compression
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.DefaultHeaders
+import io.ktor.features.StatusPages
 import io.ktor.features.deflate
 import io.ktor.features.gzip
 import io.ktor.features.minimumSize
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.cio.websocket.pingPeriod
 import io.ktor.http.cio.websocket.timeout
 import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.locations.Locations
 import io.ktor.request.path
+import io.ktor.response.respond
 import io.ktor.routing.routing
 import io.ktor.serialization.DefaultJsonConfiguration
 import io.ktor.serialization.json
 import io.ktor.util.KtorExperimentalAPI
 import java.time.Duration
 import jp.hinatan.auth.simpleJwt
+import jp.hinatan.exceptions.AuthenticationException
+import jp.hinatan.exceptions.AuthorizationException
 import jp.hinatan.routes.routes
 import org.slf4j.event.Level
 
@@ -117,6 +123,18 @@ fun Application.module(testing: Boolean = false) {
             )
         )
     }
+
+    // status page
+    // Also see routing
+    install(StatusPages) {
+        exception<AuthenticationException> {
+            call.respond(HttpStatusCode.Unauthorized)
+        }
+        exception<AuthorizationException> {
+            call.respond(HttpStatusCode.Forbidden)
+        }
+    }
+
     routing {
         routes()
     }
