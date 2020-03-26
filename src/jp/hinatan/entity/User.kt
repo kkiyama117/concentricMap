@@ -1,6 +1,6 @@
 package jp.hinatan.entity
 
-import java.util.*
+import java.util.Collections
 import kotlinx.serialization.Serializable
 
 @Serializable

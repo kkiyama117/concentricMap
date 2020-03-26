@@ -1,8 +1,8 @@
 package jp.hinatan.entity
 
 import com.typesafe.config.Optional
+import java.util.Collections
 import kotlinx.serialization.SerialName
-import java.util.*
 import kotlinx.serialization.Serializable
 
 @Serializable

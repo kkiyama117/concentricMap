@@ -1,3 +1,3 @@
 package jp.hinatan.exceptions
 
-class AuthenticationException : RuntimeException()
+open class AuthenticationException(message: String) : RuntimeException(message)

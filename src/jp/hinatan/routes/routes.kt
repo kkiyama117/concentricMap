@@ -1,13 +1,9 @@
 package jp.hinatan.routes
 
 import io.ktor.application.call
-import io.ktor.application.install
 import io.ktor.auth.UserIdPrincipal
 import io.ktor.auth.authenticate
 import io.ktor.auth.principal
-import io.ktor.features.StatusPages
-import io.ktor.http.ContentType
-import io.ktor.http.HttpStatusCode
 import io.ktor.http.cio.websocket.Frame
 import io.ktor.http.cio.websocket.readText
 import io.ktor.locations.KtorExperimentalLocationsAPI
@@ -26,8 +22,7 @@ import jp.hinatan.entity.Snippet
 import jp.hinatan.entity.User
 import jp.hinatan.entity.snippets
 import jp.hinatan.entity.users
-import jp.hinatan.exceptions.AuthenticationException
-import jp.hinatan.exceptions.AuthorizationException
+import jp.hinatan.exceptions.InvalidCredentialsException
 
 /**
  * Route setting for server
@@ -55,7 +50,7 @@ fun Routing.routes() {
     post("/login-register") {
         val post = call.receive<LoginRegister>()
         val user = users.getOrPut(post.name) { User(post.name, post.password) }
-        if (user.password != post.password) error("Invalid credentials")
+        if (user.password != post.password) throw InvalidCredentialsException("Invalid credentials")
         call.respond(mapOf("token" to simpleJwt.sign(user.name)))
     }
 
