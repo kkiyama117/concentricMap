@@ -15,7 +15,7 @@ plugins {
 val buildVersions = mapOf(
     "major" to 1,
     "minor" to 0,
-    "patch" to 2,
+    "patch" to 3,
     "suffix" to "SNAPSHOT"
 )
 val kotlinVersion: String by project
