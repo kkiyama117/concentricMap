@@ -1,11 +1,34 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath(kotlin("gradle-plugin"))
+        classpath("com.bmuschko:gradle-tomcat-plugin:2.5")
+    }
+}
+
+// Versions of plugins
+//This is necessary to make the version accessible in other places
+val kotlinVersion: String? by extra {
+    buildscript.configurations["classpath"]
+        .resolvedConfiguration.firstLevelModuleDependencies
+        .find { it.moduleName == "org.jetbrains.kotlin.jvm.gradle.plugin" }?.moduleVersion
+}
+val ktorVersion: String by project
+val serializationVersion: String by project
+val autoValueVersion: String by project
+val ktlintVersion: String by project
+
 //apply(from = "dependencies.gradle.kts")
 plugins {
-    kotlin("jvm") version "1.3.70"
+    val kotlinVersion = "1.3.70"
+    kotlin("jvm") version kotlinVersion
     // annotation
-    kotlin("kapt") version "1.3.70"
-    kotlin("plugin.serialization") version "1.3.70"
+    kotlin("kapt") version kotlinVersion
+    kotlin("plugin.serialization") version kotlinVersion
     // application plugin
     application
     idea
@@ -18,21 +41,6 @@ val buildVersions = mapOf(
     "patch" to 3,
     "suffix" to "SNAPSHOT"
 )
-val kotlinVersion: String by project
-// Versions of plugins
-val ktorVersion: String by project
-val serializationVersion by extra { "0.20.0" }
-val autoValueVersion by extra { "1.7" }
-val ktlintVersion by extra { "0.35.0" }
-
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath(kotlin("gradle-plugin"))
-    }
-}
 
 sourceSets {
     getByName("main").java.srcDirs("src")
