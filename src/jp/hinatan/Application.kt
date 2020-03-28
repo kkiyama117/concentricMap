@@ -33,11 +33,8 @@ import java.time.Duration
 import jp.hinatan.auth.simpleJwt
 import jp.hinatan.exceptions.AuthenticationException
 import jp.hinatan.exceptions.AuthorizationException
-import jp.hinatan.exceptions.InvalidCredentialsException
 import jp.hinatan.routes.routes
 import org.slf4j.event.Level
-
-fun main(args: Array<String>): Unit = io.ktor.server.cio.EngineMain.main(args)
 
 @KtorExperimentalAPI
 @KtorExperimentalLocationsAPI

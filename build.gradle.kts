@@ -53,7 +53,7 @@ group = "jp.hinatan"
 version = "${buildVersions["major"]}.${buildVersions["minor"]}.${buildVersions["patch"]}-${buildVersions["suffix"]}"
 
 application {
-    mainClassName = "io.ktor.server.cio.EngineMain"
+    mainClassName = "io.ktor.server.jetty.EngineMain"
 }
 
 // setting for kapt (annotation)
@@ -65,10 +65,6 @@ kapt {
     arguments {
         arg("SomeKaptArgument", "ArgumentValue")
     }
-}
-
-application {
-//    mainClassName = "io.ktor.server.netty.EngineMain"
 }
 
 // setting for kapt (annotation)
@@ -110,7 +106,8 @@ dependencies {
         // server
         "io.ktor:ktor-server-core:$ktorVersion",
         "io.ktor:ktor-server-host-common:$ktorVersion",
-        "io.ktor:ktor-server-cio:$ktorVersion",
+//        "io.ktor:ktor-server-cio:$ktorVersion",
+        "io.ktor:ktor-server-jetty:$ktorVersion",
         // html
         "io.ktor:ktor-html-builder:$ktorVersion",
         // json
