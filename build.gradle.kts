@@ -1,3 +1,4 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
@@ -6,7 +7,6 @@ buildscript {
     }
     dependencies {
         classpath(kotlin("gradle-plugin"))
-        classpath("com.bmuschko:gradle-tomcat-plugin:2.5")
     }
 }
 
@@ -32,6 +32,8 @@ plugins {
     // application plugin
     application
     idea
+    // create fat jar
+    id("com.github.johnrengelman.shadow") version "5.2.0"
 }
 
 // versions
@@ -168,4 +170,18 @@ tasks.register<JavaExec>("ktlintFormat") {
     classpath = configurations.getByName("ktlint")
     main = "com.pinterest.ktlint.Main"
     args = listOf("-F", "src/**/*.kt")
+}
+
+tasks.withType<Jar> {
+    manifest {
+        attributes(
+            mapOf(
+                "Main-Class" to application.mainClassName
+            )
+        )
+    }
+}
+
+tasks.withType<ShadowJar>{
+    mergeServiceFiles()
 }
