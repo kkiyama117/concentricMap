@@ -1,6 +1,5 @@
 package jp.hinatan
 
-import com.sun.xml.internal.ws.encoding.soap.SerializationException
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
@@ -33,6 +32,7 @@ import io.ktor.routing.routing
 import io.ktor.serialization.DefaultJsonConfiguration
 import io.ktor.serialization.json
 import io.ktor.util.KtorExperimentalAPI
+import java.time.Duration
 import jp.hinatan.auth.simpleJwt
 import jp.hinatan.exceptions.AuthenticationException
 import jp.hinatan.exceptions.AuthorizationException
@@ -40,7 +40,6 @@ import jp.hinatan.routes.deprecated
 import jp.hinatan.routes.routes
 import jp.hinatan.routes.webSocket
 import org.slf4j.event.Level
-import java.time.Duration
 
 @KtorExperimentalAPI
 @KtorExperimentalLocationsAPI

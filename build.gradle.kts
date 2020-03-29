@@ -32,6 +32,7 @@ plugins {
     // application plugin
     application
     idea
+    // for war
     war
     // create fat jar
     id("com.github.johnrengelman.shadow") version "5.2.0"
@@ -111,6 +112,7 @@ dependencies {
         "io.ktor:ktor-server-host-common:$ktorVersion",
 //        "io.ktor:ktor-server-cio:$ktorVersion",
         "io.ktor:ktor-server-jetty:$ktorVersion",
+        "io.ktor:ktor-server-servlet:$ktorVersion",
         // html
         "io.ktor:ktor-html-builder:$ktorVersion",
         // json
@@ -183,6 +185,6 @@ tasks.withType<Jar> {
     }
 }
 
-tasks.withType<ShadowJar>{
+tasks.withType<ShadowJar> {
     mergeServiceFiles()
 }

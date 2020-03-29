@@ -57,4 +57,3 @@ fun Routing.routes() {
         call.respond(mapOf("Status" to "OK"))
     }
 }
-

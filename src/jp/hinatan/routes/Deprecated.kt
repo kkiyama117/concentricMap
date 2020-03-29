@@ -9,7 +9,7 @@ import jp.hinatan.routes.entity.MyLocation
 import jp.hinatan.routes.entity.Type
 
 @KtorExperimentalLocationsAPI
-fun Routing.deprecated(){
+fun Routing.deprecated() {
     get<MyLocation> {
         call.respondText("Location: name=${it.name}, arg1=${it.arg1}, arg2=${it.arg2}")
     }
