@@ -151,6 +151,10 @@ fun Application.module(testing: Boolean = false) {
         exception<AuthorizationException> {
             call.respond(HttpStatusCode.Forbidden)
         }
+        // Any other exception
+        exception<Throwable> {
+            call.respond(HttpStatusCode.InternalServerError)
+        }
     }
 
     routing {
