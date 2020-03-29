@@ -32,6 +32,7 @@ plugins {
     // application plugin
     application
     idea
+    war
     // create fat jar
     id("com.github.johnrengelman.shadow") version "5.2.0"
 }

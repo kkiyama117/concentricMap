@@ -65,6 +65,11 @@ fun Routing.routes() {
         call.respondText("Inside $it")
     }
 
+    get("/") {
+        // Check databases/other services.
+        call.respond(mapOf("Status" to "OK"))
+    }
+
     get("/health_check") {
         // Check databases/other services.
         call.respond(mapOf("Status" to "OK"))
