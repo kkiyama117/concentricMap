@@ -1,11 +1,13 @@
 package jp.hinatan
 
+import com.sun.xml.internal.ws.encoding.soap.SerializationException
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.auth.Authentication
 import io.ktor.auth.UserIdPrincipal
 import io.ktor.auth.jwt.jwt
+import io.ktor.content.TextContent
 import io.ktor.features.AutoHeadResponse
 import io.ktor.features.CORS
 import io.ktor.features.CallLogging
@@ -16,11 +18,13 @@ import io.ktor.features.StatusPages
 import io.ktor.features.deflate
 import io.ktor.features.gzip
 import io.ktor.features.minimumSize
+import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.cio.websocket.pingPeriod
 import io.ktor.http.cio.websocket.timeout
+import io.ktor.http.withCharset
 import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.locations.Locations
 import io.ktor.request.path
@@ -29,12 +33,14 @@ import io.ktor.routing.routing
 import io.ktor.serialization.DefaultJsonConfiguration
 import io.ktor.serialization.json
 import io.ktor.util.KtorExperimentalAPI
-import java.time.Duration
 import jp.hinatan.auth.simpleJwt
 import jp.hinatan.exceptions.AuthenticationException
 import jp.hinatan.exceptions.AuthorizationException
+import jp.hinatan.routes.deprecated
 import jp.hinatan.routes.routes
+import jp.hinatan.routes.webSocket
 import org.slf4j.event.Level
+import java.time.Duration
 
 @KtorExperimentalAPI
 @KtorExperimentalLocationsAPI
@@ -125,6 +131,19 @@ fun Application.module(testing: Boolean = false) {
     // status page
     // Also see routing
     install(StatusPages) {
+        status(HttpStatusCode.NotFound) {
+            call.respond(
+                TextContent(
+                    "${it.value} ${it.description}",
+                    ContentType.Text.Plain.withCharset(Charsets.UTF_8),
+                    it
+                )
+            )
+//            call.respond(
+//                HttpStatusCode.NotFound,
+//                mapOf("status" to ContentType.Text)
+//            )
+        }
         // About Auth
         exception<AuthenticationException> { exception ->
             call.respond(HttpStatusCode.Unauthorized, mapOf("status" to "NG", "error" to (exception.message ?: "")))
@@ -136,5 +155,7 @@ fun Application.module(testing: Boolean = false) {
 
     routing {
         routes()
+        webSocket()
+        deprecated()
     }
 }

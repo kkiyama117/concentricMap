@@ -41,7 +41,7 @@ plugins {
 val buildVersions = mapOf(
     "major" to 1,
     "minor" to 1,
-    "patch" to 3,
+    "patch" to 4,
     "suffix" to "SNAPSHOT"
 )
 
