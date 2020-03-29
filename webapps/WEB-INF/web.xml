@@ -3,8 +3,6 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
          version="3.0">
-    <!-- (必須) application.conf のパスの指定 -->
-    <!-- クラスパスからの絶対パスとして読み込まれることに注意してください  -->
     <context-param>
         <param-name>io.ktor.ktor.config</param-name>
         <param-value>application.conf</param-value>
@@ -15,10 +13,8 @@
         <servlet-name>APIServlet</servlet-name>
         <servlet-class>io.ktor.server.servlet.ServletApplicationEngine</servlet-class>
 
-        <!-- 必須! -->
         <async-supported>true</async-supported>
 
-        <!-- (任意) 最大100MB のファイルのアップロード-->
         <multipart-config>
             <max-file-size>304857600</max-file-size>
             <max-request-size>304857600</max-request-size>
