@@ -56,6 +56,10 @@ sourceSets {
 group = "jp.hinatan"
 version = "${buildVersions["major"]}.${buildVersions["minor"]}.${buildVersions["patch"]}-${buildVersions["suffix"]}"
 
+war{
+    webAppDirName = "webapps"
+}
+
 application {
     mainClassName = "io.ktor.server.jetty.EngineMain"
 }
