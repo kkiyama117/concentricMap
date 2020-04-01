@@ -33,17 +33,17 @@ services:
     networks:
       - reverse-proxy
 
-    letsencrypt:
-      image: jrcs/letsencrypt-nginx-proxy-companion
-      container_name: letsencrypt
-      volumes:
-        - /var/run/docker.sock:/var/run/docker.sock:ro
-        - ./certs:/etc/nginx/certs:rw
-      volumes_from:
-        - nginx-proxy
-      restart: always
-      networks:
-        - reverse-proxy
+  letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    container_name: letsencrypt
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./certs:/etc/nginx/certs:rw
+    volumes_from:
+      - nginx-proxy
+    restart: always
+    networks:
+      - reverse-proxy
 
 networks:
   backend:
