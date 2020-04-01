@@ -5,6 +5,7 @@
 *.iml
 *.ipr
 *.iws
+app.jar
 
 # connection setting for on-hand test
 http-client.env.json
