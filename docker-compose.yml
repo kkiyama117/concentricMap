@@ -8,7 +8,6 @@ services:
     ports:
       - "8080:8080"
     networks:
-      - reverse-proxy
       - backend
     restart: always
 
