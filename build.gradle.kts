@@ -32,8 +32,6 @@ plugins {
     // application plugin
     application
     idea
-    // for war
-    war
     // create fat jar
     id("com.github.johnrengelman.shadow") version "5.2.0"
 }
@@ -56,23 +54,9 @@ sourceSets {
 group = "jp.hinatan"
 version = "${buildVersions["major"]}.${buildVersions["minor"]}.${buildVersions["patch"]}-${buildVersions["suffix"]}"
 
-war{
-    webAppDirName = "webapps"
-}
-
 application {
-    mainClassName = "io.ktor.server.jetty.EngineMain"
-}
-
-// setting for kapt (annotation)
-kapt {
-    correctErrorTypes = true
-    javacOptions {
-        option("SomeJavacOption", "OptionValue")
-    }
-    arguments {
-        arg("SomeKaptArgument", "ArgumentValue")
-    }
+//    mainClassName = "jp.hinatan.Main"
+    mainClassName = "io.ktor.server.netty.EngineMain"
 }
 
 // setting for kapt (annotation)
@@ -115,10 +99,7 @@ dependencies {
         "io.ktor:ktor-server-core:$ktorVersion",
         "io.ktor:ktor-server-host-common:$ktorVersion",
 //        "io.ktor:ktor-server-cio:$ktorVersion",
-        "io.ktor:ktor-server-jetty:$ktorVersion",
-        "io.ktor:ktor-server-servlet:$ktorVersion",
-        // html
-        "io.ktor:ktor-html-builder:$ktorVersion",
+        "io.ktor:ktor-server-netty:$ktorVersion",
         // json
         "io.ktor:ktor-serialization:$ktorVersion",
         // locations
