@@ -33,9 +33,9 @@ import io.ktor.serialization.DefaultJsonConfiguration
 import io.ktor.serialization.json
 import io.ktor.util.KtorExperimentalAPI
 import java.time.Duration
-import jp.hinatan.auth.simpleJwt
-import jp.hinatan.exceptions.AuthenticationException
-import jp.hinatan.exceptions.AuthorizationException
+import jp.hinatan.common.auth.simpleJwt
+import jp.hinatan.common.exceptions.AuthenticationException
+import jp.hinatan.common.exceptions.AuthorizationException
 import jp.hinatan.routes.deprecated
 import jp.hinatan.routes.routes
 import jp.hinatan.routes.webSocket

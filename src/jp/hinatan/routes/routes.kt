@@ -10,13 +10,13 @@ import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.route
-import jp.hinatan.auth.simpleJwt
+import jp.hinatan.common.auth.simpleJwt
 import jp.hinatan.entity.LoginRegister
 import jp.hinatan.entity.Snippet
 import jp.hinatan.entity.User
 import jp.hinatan.entity.snippets
 import jp.hinatan.entity.users
-import jp.hinatan.exceptions.InvalidCredentialsException
+import jp.hinatan.common.exceptions.InvalidCredentialsException
 
 /**
  * Route setting for server

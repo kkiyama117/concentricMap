@@ -21,6 +21,7 @@ val ktorVersion: String by project
 val serializationVersion: String by project
 val autoValueVersion: String by project
 val ktlintVersion: String by project
+val exposedVersion: String by project
 
 //apply(from = "dependencies.gradle.kts")
 plugins {
@@ -94,6 +95,10 @@ dependencies {
         // kotlin options
         // logging
         "ch.qos.logback:logback-classic:1.2.1",
+        // exposed (datanbase)
+        "org.jetbrains.exposed:exposed-core:$exposedVersion",
+        "org.jetbrains.exposed:exposed-dao:$exposedVersion",
+        "org.jetbrains.exposed:exposed-jdbc:$exposedVersion",
         // ktor
         // server
         "io.ktor:ktor-server-core:$ktorVersion",

@@ -1,4 +1,4 @@
-package jp.hinatan.exceptions
+package jp.hinatan.common.exceptions
 
 /**
  * Exception threw in JWT Authentication

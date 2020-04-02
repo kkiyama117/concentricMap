@@ -1,6 +1,8 @@
 package jp.hinatan.entity
 
 import com.typesafe.config.Optional
+import io.ktor.locations.KtorExperimentalLocationsAPI
+import io.ktor.locations.Location
 import java.util.Collections
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -19,3 +21,7 @@ val snippets: MutableList<Snippet> = Collections.synchronizedList(
         Snippet(username = "test", text = "world")
     )
 )
+
+@KtorExperimentalLocationsAPI
+@Location("/snippet2")
+class Snippet2(val Username: String)

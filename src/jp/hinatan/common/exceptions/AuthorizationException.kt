@@ -1,3 +1,3 @@
-package jp.hinatan.exceptions
+package jp.hinatan.common.exceptions
 
 class AuthorizationException : RuntimeException()
