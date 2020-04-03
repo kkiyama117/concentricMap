@@ -49,7 +49,7 @@ fun Routing.routes() {
     }
     get("/") {
         // Check databases/other services.
-        call.respond(mapOf("Status" to "OK"))
+        call.respond(mapOf("Status" to "OK", "version" to "1.2.2"))
     }
 
     get("/health_check") {
