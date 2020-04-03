@@ -36,8 +36,8 @@ class UserDAO {
                 Users.update({ Users.id eq id }) {
                     it[name] = postedUser.name ?: oldUser.name
                     it[password] = postedUser.password ?: oldUser.password
-                    it[Users.createdAt] = oldUser.createdAt
-                    it[Users.updatedAt] = System.currentTimeMillis()
+                    it[createdAt] = oldUser.createdAt
+                    it[updatedAt] = System.currentTimeMillis()
                 }
             }
             getUser(id)!!
