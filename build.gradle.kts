@@ -41,7 +41,7 @@ plugins {
 val buildVersions = mapOf(
     "major" to 1,
     "minor" to 2,
-    "patch" to 1,
+    "patch" to 2,
     "suffix" to "SNAPSHOT"
 )
 
@@ -123,7 +123,6 @@ dependencies {
         "io.ktor:ktor-client-auth-jvm:$ktorVersion",
         "io.ktor:ktor-client-json-jvm:$ktorVersion",
         "io.ktor:ktor-client-serialization-jvm:$ktorVersion",
-        // "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$serializationVersion",
         "io.ktor:ktor-client-cio:$ktorVersion",
         "io.ktor:ktor-client-websockets:$ktorVersion",
         "io.ktor:ktor-client-logging-jvm:$ktorVersion"
