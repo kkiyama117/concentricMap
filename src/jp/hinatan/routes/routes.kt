@@ -2,7 +2,6 @@ package jp.hinatan.routes
 
 import io.ktor.application.call
 import io.ktor.auth.UserIdPrincipal
-import io.ktor.auth.UserPasswordCredential
 import io.ktor.auth.authenticate
 import io.ktor.auth.authentication
 import io.ktor.auth.jwt.JWTPrincipal
@@ -14,14 +13,8 @@ import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.route
-import jp.hinatan.common.auth.JwtConfig
-import jp.hinatan.common.auth.Token
 import jp.hinatan.entity.Snippet
 import jp.hinatan.entity.snippets
-import jp.hinatan.common.db.UserDAO
-import jp.hinatan.entity.PostedUser
-import jp.hinatan.usecases.UserService.addUser
-import jp.hinatan.usecases.UserService.findUserByCredentials
 import jp.hinatan.usecases.UserService.getUserByPrincipal
 
 /**

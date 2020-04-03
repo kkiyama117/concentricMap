@@ -17,7 +17,7 @@ import jp.hinatan.usecases.UserService
 fun Routing.users() {
     route("/users") {
         // TODO: Use Firebase
-        post("/") {
+        post {
             val newUser = call.receive<PostedUser>()
             call.respond(UserService.addUser(newUser))
         }
@@ -26,7 +26,7 @@ fun Routing.users() {
 
     }
     route("/login") {
-        post() {
+        post {
             // get client ip behind proxy
             // https://github.com/ktorio/ktor/issues/351
             UserService.findUserByCredentials(call.receive<UserPasswordCredential>()).let { u ->
