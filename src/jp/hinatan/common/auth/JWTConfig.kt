@@ -8,14 +8,17 @@ import jp.hinatan.entity.User
 import java.util.*
 
 object JwtConfig {
-    const val issuer = "hinatan.jp"
+    //    const val issuer = "hinatan.jp"
     private const val secret = "my-super-secret-for-jwt"
     private const val validityInMs = 3_600_000 * 10 // 10 hours
     private val algorithm = Algorithm.HMAC512(secret)
 
-    val verifier: JWTVerifier = JWT.require(algorithm).withIssuer(issuer).build()
+    val verifier: JWTVerifier = JWT.require(algorithm).build()
+//    val verifier: JWTVerifier = JWT.require(algorithm).withIssuer(issuer).build()
 
-    fun sign(name: String): String = JWT.create().withClaim("name", name)
+    fun sign(user: User): String = JWT.create()
+        .withClaim("id", user.id)
+        .withClaim("name", user.name)
         .withExpiresAt(getExpiration())
         .sign(algorithm)
 

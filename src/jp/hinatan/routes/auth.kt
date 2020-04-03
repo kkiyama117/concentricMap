@@ -18,6 +18,9 @@ import jp.hinatan.usecases.UserService
 
 fun Routing.users() {
     route("/users") {
+        get {
+            call.respond(UserService.getUsers())
+        }
         post {
             val newUser = call.receive<PostedUser>()
             call.respond(UserService.addUser(newUser))
@@ -38,9 +41,10 @@ fun Routing.users() {
             // get client ip behind proxy
             // https://github.com/ktorio/ktor/issues/351
             UserService.findUserByCredentials(call.receive()).let { user ->
-                user?.name?.let { it -> JwtConfig.sign(it) }?.let { token ->
-                    call.respond(mapOf("token" to token))
-                }
+                user?.let { JwtConfig.sign(it) }
+                    ?.let { token ->
+                        call.respond(mapOf("token" to token))
+                    }
             } ?: throw PostValueException("User not found")
         }
     }

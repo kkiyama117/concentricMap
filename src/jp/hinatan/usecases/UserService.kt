@@ -36,4 +36,8 @@ object UserService {
             postedUser
         )
     }
+
+    fun getUsers(): List<User> = runBlocking {
+        userDAO.getUsers()
+    }
 }

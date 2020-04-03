@@ -119,7 +119,7 @@ fun Application.module(testing: Boolean = false) {
     install(Authentication) {
         jwt {
             verifier(JwtConfig.verifier)
-            realm = JwtConfig.issuer
+//            realm = JwtConfig.issuer
             validate {
                 with(it.payload) {
                     if (getClaim("name").isNull) {
