@@ -4,7 +4,7 @@ import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.auth.Authentication
-import io.ktor.auth.UserIdPrincipal
+import io.ktor.auth.jwt.JWTPrincipal
 import io.ktor.auth.jwt.jwt
 import io.ktor.content.TextContent
 import io.ktor.features.AutoHeadResponse
@@ -32,20 +32,27 @@ import io.ktor.routing.routing
 import io.ktor.serialization.DefaultJsonConfiguration
 import io.ktor.serialization.json
 import io.ktor.util.KtorExperimentalAPI
-import java.time.Duration
-import jp.hinatan.common.auth.simpleJwt
+import jp.hinatan.common.auth.JwtConfig
+import jp.hinatan.common.db.DatabaseFactory
+import jp.hinatan.common.db.UserDAO
 import jp.hinatan.common.exceptions.AuthenticationException
 import jp.hinatan.common.exceptions.AuthorizationException
+import jp.hinatan.common.exceptions.PostValueException
 import jp.hinatan.routes.deprecated
 import jp.hinatan.routes.routes
+import jp.hinatan.routes.users
 import jp.hinatan.routes.webSocket
 import org.slf4j.event.Level
+import java.time.Duration
 
 @KtorExperimentalAPI
 @KtorExperimentalLocationsAPI
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
+    // TODO: UserDAO
+    DatabaseFactory.init()
+
     install(Locations) {
         // set URL
     }
@@ -111,9 +118,16 @@ fun Application.module(testing: Boolean = false) {
     // Authentication
     install(Authentication) {
         jwt {
-            verifier(simpleJwt.verifier)
+            verifier(JwtConfig.verifier)
+            realm = JwtConfig.issuer
             validate {
-                UserIdPrincipal(it.payload.getClaim("name").asString())
+                with(it.payload) {
+                    if(getClaim("login").isNull) {
+                        null
+                    } else {
+                        JWTPrincipal(it.payload)
+                    }
+                }
             }
         }
     }
@@ -151,6 +165,9 @@ fun Application.module(testing: Boolean = false) {
             call.respond(HttpStatusCode.Forbidden)
         }
         // Any other exception
+        exception<PostValueException> { exception ->
+            call.respond(HttpStatusCode.InternalServerError, mapOf("status" to "NG", "error" to (exception.message ?: "")))
+        }
         exception<Throwable> {
             call.respond(HttpStatusCode.InternalServerError)
         }
@@ -158,6 +175,7 @@ fun Application.module(testing: Boolean = false) {
 
     routing {
         routes()
+        users()
         webSocket()
         deprecated()
     }

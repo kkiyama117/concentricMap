@@ -96,6 +96,8 @@ dependencies {
         // logging
         "ch.qos.logback:logback-classic:1.2.1",
         // exposed (datanbase)
+        "com.zaxxer:HikariCP:3.4.2",
+        "org.xerial:sqlite-jdbc:3.21.0.1",
         "org.jetbrains.exposed:exposed-core:$exposedVersion",
         "org.jetbrains.exposed:exposed-dao:$exposedVersion",
         "org.jetbrains.exposed:exposed-jdbc:$exposedVersion",
