@@ -7,8 +7,6 @@ import io.ktor.auth.jwt.JWTAuthenticationProvider
 import jp.hinatan.entity.User
 import java.util.*
 
-data class Token (val token: String)
-
 object JwtConfig {
     const val issuer = "hinatan.jp"
     private const val secret = "my-super-secret-for-jwt"

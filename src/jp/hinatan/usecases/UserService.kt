@@ -3,7 +3,9 @@ package jp.hinatan.usecases
 
 import io.ktor.auth.UserPasswordCredential
 import io.ktor.auth.jwt.JWTPrincipal
+import io.ktor.client.features.auth.Auth
 import jp.hinatan.common.db.UserDAO
+import jp.hinatan.entity.AuthCredential
 import jp.hinatan.entity.PostedUser
 import jp.hinatan.entity.User
 import kotlinx.coroutines.runBlocking
@@ -19,8 +21,7 @@ object UserService {
         userDAO.getUser(token.payload.getClaim("id").asInt())
     }
 
-
-    fun findUserByCredentials(credential: UserPasswordCredential): User? = runBlocking {
+    fun findUserByCredentials(credential: AuthCredential): User? = runBlocking {
         userDAO.getUsers().firstOrNull { it.password == credential.password && it.name == credential.name }
     }
 

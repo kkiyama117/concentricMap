@@ -122,7 +122,7 @@ fun Application.module(testing: Boolean = false) {
             realm = JwtConfig.issuer
             validate {
                 with(it.payload) {
-                    if(getClaim("login").isNull) {
+                    if (getClaim("name").isNull) {
                         null
                     } else {
                         JWTPrincipal(it.payload)
@@ -166,11 +166,11 @@ fun Application.module(testing: Boolean = false) {
         }
         // Any other exception
         exception<PostValueException> { exception ->
-            call.respond(HttpStatusCode.InternalServerError, mapOf("status" to "NG", "error" to (exception.message ?: "")))
+            call.respond(HttpStatusCode.BadRequest, mapOf("status" to "NG", "error" to (exception.message ?: "")))
         }
-        exception<Throwable> {
-            call.respond(HttpStatusCode.InternalServerError)
-        }
+//        exception<Throwable> {
+//            call.respond(HttpStatusCode.InternalServerError, mapOf("status" to "NG", "error" to (this.toString())))
+//        }
     }
 
     routing {
